@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  router1:
+    build:
+      context: ./routers/router1
+    container_name: router1
+    hostname: router1
+    privileged: true
+    networks:
+      as_internal:
+        ipv4_address: 10.0.1.1
+      external:
+        ipv4_address: 172.20.0.2
+    volumes:
+      - ./routers/router1/frr:/etc/frr
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+
+  router2:
+    build:
+      context: ./routers/router2
+    container_name: router2
+    hostname: router2
+    privileged: true
+    networks:
+      as_internal:
+        ipv4_address: 10.0.1.2
+      segment1:
+        ipv4_address: 120.0.16.1
+    volumes:
+      - ./routers/router2/frr:/etc/frr
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+
+  router3:
+    build:
+      context: ./routers/router3
+    container_name: router3
+    hostname: router3
+    privileged: true
+    networks:
+      as_internal:
+        ipv4_address: 10.0.1.3
+      segment2:
+        ipv4_address: 120.0.24.1
+    volumes:
+      - ./routers/router3/frr:/etc/frr
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+  
+  # Optional mock external BGP peer
+  # external_peer:
+  #   build:
+  #     context: ./external_peer
+  #   container_name: external_peer
+  #   hostname: external_peer
+  #   privileged: true
+  #   networks:
+  #     external:
+  #       ipv4_address: 172.20.0.3
+  #   volumes:
+  #     - ./external_peer/frr:/etc/frr
+  #   cap_add:
+  #     - NET_ADMIN
+  #     - SYS_ADMIN
+
+networks:
+  as_internal:
+    external: true
+  segment1:
+    external: true
+  segment2:
+    external: true
+  external:
+    external: true
