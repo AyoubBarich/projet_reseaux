@@ -74,8 +74,9 @@ networks:
       config:
         - subnet: "120.0.24.0/24"
   external:
-    driver: bridge
+    driver: macvlan
+    driver_opts:
+      parent: eno2
     ipam:
-      driver: default
       config:
         - subnet: "172.20.0.0/24"
