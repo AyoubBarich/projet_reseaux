@@ -10,5 +10,12 @@ ENV RANGE_END="120.0.24.200"
 ENV ROUTERS="120.0.24.10"
 ENV DOMAIN_NAME_SERVERS="8.8.8.8, 8.8.4.4"
 
-# You can add custom configurations here if needed
-COPY config/dhcpd.conf /etc/dhcp/dhcpd.conf 
+# Copy our custom configuration (with DHCPD_OPTS="eth0" in it)
+COPY config/dhcpd.conf /etc/dhcp/dhcpd.conf
+
+# Create a startup script
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Override default command to use our custom start script
+CMD ["/start.sh"] 
