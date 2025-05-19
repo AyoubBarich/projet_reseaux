@@ -1,21 +1,21 @@
-FROM 3x3cut0r/isc-dhcp-server:latest
+FROM alpine:latest
 
-# Set environment variables for our specific configuration
-ENV TZ="Europe/Paris"
-ENV IFACE="eth0"
-ENV SUBNET="120.0.24.0"
-ENV NETMASK="255.255.255.0"
-ENV RANGE_BEGIN="120.0.24.100"
-ENV RANGE_END="120.0.24.200"
-ENV ROUTERS="120.0.24.10"
-ENV DOMAIN_NAME_SERVERS="8.8.8.8, 8.8.4.4"
+# Install dnsmasq instead of DHCP server
+RUN set -xe \
+    && apk update \
+    && apk add --update --no-progress dnsmasq iproute2 dhclient\
+    && rm -rf /var/cache/apk/*
 
-# Copy our custom configuration (with DHCPD_OPTS="eth0" in it)
-COPY config/dhcpd.conf /etc/dhcp/dhcpd.conf
+# Create directory for leases file
+RUN mkdir -p /var/lib/misc \
+    && touch /var/lib/misc/dnsmasq.leases \
+    && chmod -R 755 /var/lib/misc
+
+# Copy our configuration
+COPY config/dnsmasq.conf /etc/dnsmasq.conf
 
 # Create a startup script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Override default command to use our custom start script
 CMD ["/start.sh"] 

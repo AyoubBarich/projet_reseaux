@@ -1,4 +1,4 @@
-version: '3'
+
 
 services:
   router1:
@@ -59,7 +59,8 @@ services:
     hostname: dhcp-server
     restart: unless-stopped
     privileged: true
-    network_mode: "none"
+    networks:
+      - temp_net
     volumes:
       - ./dhcp/data:/var/lib/dhcp
       - ./dhcp/config:/etc/dhcp
@@ -70,33 +71,66 @@ services:
     
     # We'll manually connect to particulier network after creation
 
+# networks:
+#   as_internal:
+#     driver: macvlan
+#     driver_opts:
+#       parent: eno1.10
+#     ipam:
+#       config:
+#         - subnet: 10.0.1.0/24
+#   entreprise:
+#     driver: macvlan
+#     driver_opts:
+#       parent: eno1.16
+#     ipam:
+#       config:
+#         - subnet: 120.0.16.0/24
+#   particulier:
+#     driver: macvlan
+#     driver_opts:
+#       parent: eno1.24
+#     ipam:
+#       config:
+#         - subnet: 120.0.24.0/24
+#   external:
+#     driver: macvlan
+#     driver_opts:
+#       parent: eno1.20
+#     ipam:
+#       config:
+#         - subnet: 172.20.0.0/24
+
+
 networks:
-  as_internal:
+  temp_net:
     driver: bridge
+    internal: true  # This prevents internet access
+  as_internal:
+    driver: macvlan
     driver_opts:
-      com.docker.network.bridge.enable_multicast: "true"
+      parent: dummy0
     ipam:
-      driver: default
       config:
-        - subnet: "10.0.1.0/24"
+        - subnet: 10.0.1.0/24
   entreprise:
     driver: macvlan
     driver_opts:
-      parent: eno2
+      parent: dummy0
     ipam:
       config:
-        - subnet: "120.0.16.0/24"
+        - subnet: 120.0.16.0/24
   particulier:
     driver: macvlan
     driver_opts:
-      parent: eno2
+      parent: dummy0
     ipam:
       config:
-        - subnet: "120.0.24.0/24"
+        - subnet: 120.0.24.0/24
   external:
-    driver: bridge
+    driver: macvlan
     driver_opts:
-      com.docker.network.bridge.enable_multicast: "true"
+      parent: dummy0
     ipam:
       config:
-        - subnet: "172.20.0.0/24"
+        - subnet: 172.20.0.0/24
