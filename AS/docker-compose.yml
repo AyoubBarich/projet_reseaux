@@ -27,7 +27,7 @@ services:
     networks:
       as_internal:
         ipv4_address: 10.0.1.20
-      segment1:
+      entreprise:
         ipv4_address: 120.0.16.10
     volumes:
       - ./routers/router2/frr:/etc/frr
@@ -44,7 +44,7 @@ services:
     networks:
       as_internal:
         ipv4_address: 10.0.1.30
-      segment2:
+      particulier:
         ipv4_address: 120.0.24.10
     volumes:
       - ./routers/router3/frr:/etc/frr
@@ -61,16 +61,18 @@ networks:
       driver: default
       config:
         - subnet: "10.0.1.0/24"
-  segment1:
-    driver: bridge
+  entreprise:
+    driver: macvlan
+    driver_opts:
+      parent: eno2
     ipam:
-      driver: default
       config:
         - subnet: "120.0.16.0/24"
-  segment2:
-    driver: bridge
+  particulier:
+    driver: macvlan
+    driver_opts:
+      parent: eno2
     ipam:
-      driver: default
       config:
         - subnet: "120.0.24.0/24"
   external:
