@@ -52,6 +52,23 @@ services:
       - NET_ADMIN
       - SYS_ADMIN
 
+  dhcp-server:
+    build:
+      context: ./dhcp
+    container_name: dhcp-server
+    hostname: dhcp-server
+    restart: unless-stopped
+    networks:
+      particulier:
+        ipv4_address: 120.0.24.2
+    volumes:
+      - ./dhcp/data:/var/lib/dhcp
+      - ./dhcp/config:/etc/dhcp
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - NET_BROADCAST
+
 networks:
   as_internal:
     driver: bridge
@@ -76,9 +93,9 @@ networks:
       config:
         - subnet: "120.0.24.0/24"
   external:
-    driver: macvlan
+    driver: bridge
     driver_opts:
-      parent: eno2
+      com.docker.network.bridge.enable_multicast: "true"
     ipam:
       config:
         - subnet: "172.20.0.0/24"
