@@ -1,6 +1,6 @@
 services:
   router1:
-    image: router_image:1.0.0
+    image: router_image:2.0.0
     container_name: router1
     hostname: router1
     privileged: true
@@ -17,7 +17,7 @@ services:
 
   router2:
 
-    image: router_image:1.0.0
+    image: router_image:2.0.0
     container_name: router2
     hostname: router2
     privileged: true
@@ -33,7 +33,7 @@ services:
       - SYS_ADMIN
 
   router3:
-    image: router_image:1.0.0
+    image: router_image:2.0.0
     container_name: router3
     hostname: router3
     privileged: true

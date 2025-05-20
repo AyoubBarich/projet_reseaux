@@ -11,6 +11,10 @@ RUN sed -i 's/bgpd=no/bgpd=yes/' /etc/frr/daemons && \
     sed -i 's/ospfd=no/ospfd=yes/' /etc/frr/daemons && \
     sed -i 's/zebra=no/zebra=yes/' /etc/frr/daemons
 
+# Copy FRR directory first and then change owner
+COPY frr /etc/frr
+RUN chown -R frr:frr /etc/frr
+
 # Create /run/frr
 RUN mkdir -p /run/frr && chown frr:frr /run/frr
 
