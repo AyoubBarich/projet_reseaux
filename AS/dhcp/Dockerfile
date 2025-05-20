@@ -3,7 +3,7 @@ FROM alpine:latest
 # Install dnsmasq instead of DHCP server
 RUN set -xe \
     && apk update \
-    && apk add --update --no-progress dnsmasq iproute2 dhclient\
+    && apk add --update --no-progress dnsmasq iproute2 \
     && rm -rf /var/cache/apk/*
 
 # Create directory for leases file

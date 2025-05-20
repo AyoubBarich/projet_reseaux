@@ -20,7 +20,7 @@ docker run --rm -it \
               echo '------------------------------' && \
               echo 'Running simple DHCP client (udhcpc)...' && \
               # Busybox udhcpc is included in Alpine by default
-              udhcpc -i eth0 -f -v && \
+              udhcpc -i eth0 -f -v -R && \
               echo '------------------------------' && \
               echo 'Network config after DHCP:' && \
               ip addr" 

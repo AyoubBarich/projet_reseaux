@@ -1,9 +1,6 @@
-
-
 services:
   router1:
-    build:
-      context: ./routers/router1
+    image: router_image:1.0.0
     container_name: router1
     hostname: router1
     privileged: true
@@ -11,7 +8,7 @@ services:
       as_internal:
         ipv4_address: 10.0.1.10
       external:
-        ipv4_address: 172.20.0.20
+        ipv4_address: 120.0.80.5
     volumes:
       - ./routers/router1/frr:/etc/frr
     cap_add:
@@ -19,8 +16,8 @@ services:
       - SYS_ADMIN
 
   router2:
-    build:
-      context: ./routers/router2
+
+    image: router_image:1.0.0
     container_name: router2
     hostname: router2
     privileged: true
@@ -36,8 +33,7 @@ services:
       - SYS_ADMIN
 
   router3:
-    build:
-      context: ./routers/router3
+    image: router_image:1.0.0
     container_name: router3
     hostname: router3
     privileged: true
@@ -53,8 +49,7 @@ services:
       - SYS_ADMIN
 
   dhcp-server:
-    build:
-      context: ./dhcp
+    image: dhcp_image:1.0.0
     container_name: dhcp-server
     hostname: dhcp-server
     restart: unless-stopped
@@ -71,66 +66,70 @@ services:
     
     # We'll manually connect to particulier network after creation
 
-# networks:
-#   as_internal:
-#     driver: macvlan
-#     driver_opts:
-#       parent: eno1.10
-#     ipam:
-#       config:
-#         - subnet: 10.0.1.0/24
-#   entreprise:
-#     driver: macvlan
-#     driver_opts:
-#       parent: eno1.16
-#     ipam:
-#       config:
-#         - subnet: 120.0.16.0/24
-#   particulier:
-#     driver: macvlan
-#     driver_opts:
-#       parent: eno1.24
-#     ipam:
-#       config:
-#         - subnet: 120.0.24.0/24
-#   external:
-#     driver: macvlan
-#     driver_opts:
-#       parent: eno1.20
-#     ipam:
-#       config:
-#         - subnet: 172.20.0.0/24
-
-
 networks:
   temp_net:
     driver: bridge
     internal: true  # This prevents internet access
   as_internal:
-    driver: macvlan
+    driver: bridge
     driver_opts:
-      parent: dummy0
+      com.docker.network.bridge.enable_multicast: "true"
     ipam:
       config:
         - subnet: 10.0.1.0/24
   entreprise:
     driver: macvlan
     driver_opts:
-      parent: dummy0
+      parent: eno1
     ipam:
       config:
         - subnet: 120.0.16.0/24
   particulier:
     driver: macvlan
     driver_opts:
-      parent: dummy0
+      parent: eno1
     ipam:
       config:
         - subnet: 120.0.24.0/24
   external:
     driver: macvlan
     driver_opts:
-      parent: dummy0
+      parent: eno1
     ipam:
       config:
-        - subnet: 172.20.0.0/24
+        - subnet: 120.0.80.4/30
+          gateway: 120.0.80.6
+
+
+# networks:
+#   temp_net:
+#     driver: bridge
+#     internal: true  # This prevents internet access
+#   as_internal:
+#     driver: macvlan
+#     driver_opts:
+#       parent: dummy0
+#     ipam:
+#       config:
+#         - subnet: 10.0.1.0/24
+#   entreprise:
+#     driver: macvlan
+#     driver_opts:
+#       parent: dummy0
+#     ipam:
+#       config:
+#         - subnet: 120.0.16.0/24
+#   particulier:
+#     driver: macvlan
+#     driver_opts:
+#       parent: dummy0
+#     ipam:
+#       config:
+#         - subnet: 120.0.24.0/24
+#   external:
+#     driver: macvlan
+#     driver_opts:
+#       parent: dummy0
+#     ipam:
+#       config:
+#         - subnet: 172.20.0.0/24
